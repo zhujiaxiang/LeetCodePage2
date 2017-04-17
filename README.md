@@ -89,9 +89,12 @@ Find the number of boomerangs. You may assume that n will be at most 500 and coo
 #### Explanation:
 The two boomerangs are [[1,0],[0,0],[2,0]] and [[1,0],[2,0],[0,0]]
 #### 问题
-给出一系列坐标，通过这些坐标问你能做几个回旋镖？回旋镖的意思是中点到两点距离相同。
+给出一系列坐标，通过这些坐标问你能找出几组回旋镖数组？回旋镖数组的意思是中点到两点距离相同。
 #### 思路
-只用unordered_map存储 距离：相同距离的边数，
+使用欧氏距离计算两点距离（不开方）
+
+使用unordered_map存储 距离：相同距离的边数，
+
 再使用排列组合将边数的组合数全部加起来
 #### C++
 
