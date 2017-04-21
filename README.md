@@ -1,4 +1,4 @@
-## LeetCodePageTwo
+## LeetCodePage2
 ### 350. Intersection of Two Arrays II
 Given two arrays, write a function to compute their intersection.
 
@@ -403,12 +403,266 @@ string toHex(int num) {
 #### 收获
 num & 15 转化16进制
 
-###
+### 121. Best Time to Buy and Sell Stock
+Say you have an array for which the ith element is the price of a given stock on day i.
+
+If you were only permitted to complete at most one transaction (ie, buy one and sell one share of the stock), design an algorithm to find the maximum profit.
+
+
+```
+Example 1:
+Input: [7, 1, 5, 3, 6, 4]
+Output: 5
+```
+
+
+max. difference = 6-1 = 5 (not 7-1 = 6, as selling price needs to be larger than buying price)
+
+```
+Example 2:
+Input: [7, 6, 4, 3, 1]
+Output: 0
+```
+
+
+In this case, no transaction is done, i.e. max profit = 0.
 #### 问题
+给一组数组，a[i]代表第i天的股票价格，问只能进行一次买卖的话怎么样才能获得最大收益。
+#### 思路
+每次取一个日期，遍历求出他能取得的最大收益，直到所有日期取完
+#### C++
+
+```
+int maxProfit(vector<int>& prices) {
+    int maximum = 0;
+    for(int i = 0; i < prices.size();i++){
+        int pre = prices[i];
+        
+        int j = i + 1;
+        while (j<prices.size()&&prices[j]>prices[i]) {
+            maximum = max(maximum, prices[j]-pre);
+            j++;
+        }
+        
+    }
+    return maximum;
+}
+```
+
+### 202. Happy Number
+Write an algorithm to determine if a number is "happy".
+
+A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+
+Example: 19 is a happy number
+
+
+```
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
+```
+
+#### 问题
+找出happy number
+#### 思路
+非happy number会出现循环解（听过insert进set的成功与否 来探查）
+#### C++
+
+```
+bool isHappy(int n) {
+
+    set<int> loopDetectSet;
+    int sum;
+    while (n!=1&&loopDetectSet.insert(n).second) {
+         sum = 0;
+        while (n>0) {
+            sum = sum + (n%10) * (n%10);
+            n=n/10;
+        }
+        n = sum;
+    }
+    
+    return n == 1;
+}
+```
+
+#### 收获
+从数理角度考虑，数学归纳法？
+
+### 326. Power of Three
+Given an integer, write a function to determine if it is a power of three.
+
+Follow up:
+Could you do it without using any loop / recursion?
+#### 问题
+求一个数是否是三的倍数
+#### 思路
+log10（n）/log10（3）是否为整数
+#### C++
+
+```
+bool isPowerOfThree(int n) {
+    return  fmod(log10(n)/log10(3), 1)  == 0;
+}
+```
+
+### 231. Power of Two
+同上
+
+### 83. Remove Duplicates from Sorted List
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+
+
+```
+For example,
+Given 1->1->2, return 1->2.
+Given 1->1->2->3->3, return 1->2->3.
+```
+
+#### 问题
+删除重复的结点
 #### 思路
 #### C++
-#### 收获
 
+```
+ListNode* deleteDuplicates(ListNode* head) {
+    ListNode* cur = head;
+    
+    while(cur!=NULL)
+    {
+        while (cur->next&&(cur->val == cur->next->val)) {
+            cur->next = cur->next->next;
+        }
+            cur = cur->next;
+        
+        
+    }
+    return head;
+    
+}
+```
+
+### 35. Search Insert Position
+Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You may assume no duplicates in the array.
+
+
+```
+Here are few examples.
+[1,3,5,6], 5 → 2
+[1,3,5,6], 2 → 1
+[1,3,5,6], 7 → 4
+[1,3,5,6], 0 → 0
+```
+
+#### 问题
+插入数字，返回位置
+#### 思路
+常规解法不提，提一提二分查找
+#### C++
+
+```
+    int searchInsert(vector<int>& nums, int target) {
+    int low = 0;
+    int high = (int)nums.size() -1;
+    
+    while(low<=high){
+        int mid = low + (low + high)/2;
+        if (target < nums[mid]) {
+            high = mid-1 ;
+        }else{
+            low = mid +1;
+        }
+    }
+    return low;
+    
+}
+```
+
+
+### 437. Path Sum III
+You are given a binary tree in which each node contains an integer value.
+
+Find the number of paths that sum to a given value.
+
+The path does not need to start or end at the root or a leaf, but it must go downwards (traveling only from parent nodes to child nodes).
+
+The tree has no more than 1,000 nodes and the values are in the range -1,000,000 to 1,000,000.
+
+
+```
+Example:
+
+root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+
+      10
+     /  \
+    5   -3
+   / \    \
+  3   2   11
+ / \   \
+3  -2   1
+
+Return 3. The paths that sum to 8 are:
+
+1.  5 -> 3
+2.  5 -> 2 -> 1
+3. -3 -> 11
+```
+
+#### 问题
+树种结点组合成指定数字的组合数，只能由父到子
+#### 思路
+两次递归
+#### C++
+
+```
+public:
+    int pathSum(TreeNode* root, int sum) {
+    
+    if(root == NULL) return 0;
+    return sumUp(root, 0, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
+}
+
+int sumUp(TreeNode *root,int pre,int sum)
+{
+    if(root == NULL)
+    {
+        return 0;
+    }
+    
+    int current = pre + root->val;
+    return (current == sum) + sumUp(root->left, current, sum) + sumUp(root->right, current, sum);
+}
+```
+
+### 70. Climbing Stairs
+You are climbing a stair case. It takes n steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+Note: Given n will be a positive integer.
+#### 问题
+爬楼梯，一次只能爬1或者2，求有多少种爬法
+#### 思路
+斐波那契数列
+#### C++
+
+```
+   int climbStairs(int n) {
+    int a= 0,b=1;
+    while (n--) {
+        b = b+a;
+        a = b-a;
+    }
+    return b;
+}
+```
+
+#### 收获
 ###
 #### 问题
 #### 思路
